@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+streamlit
+requests
+pydantic
+torch
+transformers
+accelerate
+sentencepiece
+bitsandbytes
