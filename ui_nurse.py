@@ -24,7 +24,7 @@ st.markdown("""
     .main-title {
         font-size: 2.5em;
         font-weight: bold;
-        color: #1F513C;
+        color: #ffffff;
         margin-bottom: 10px;
     }
     .subtitle {
@@ -47,6 +47,17 @@ st.markdown("""
         padding: 15px;
         border-radius: 5px;
         margin: 10px 0;
+            
+    .info-banner {
+        background: rgba(56, 139, 253, 0.15);
+        border-left: 4px solid #388BFD;
+        color: #C9D1D9;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin: 10px 0 20px 0;
+        font-size: 0.95rem;
+    }
+
     }
 </style>
 """, unsafe_allow_html=True)
@@ -56,7 +67,12 @@ st.markdown("""
 # ============================================================================
 
 st.markdown('<div class="main-title">🩺 EdgeCare – Nurse Triage Intake</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Privacy-preserving, offline-first patient intake</div>', unsafe_allow_html=True)
+st.markdown("""
+<div class="info-banner">
+    🔐 Privacy-preserving, offline-first patient intake
+</div>
+""", unsafe_allow_html=True)
+
 
 # ============================================================================
 # SESSION STATE
@@ -79,7 +95,7 @@ def submit_to_backend(intake: PatientIntake):
         response = requests.post(
             f"{BACKEND_URL}/triage",
             json=intake.dict(),
-            timeout=60
+            timeout=180
         )
         if response.status_code == 200:
             return response.json()
@@ -301,8 +317,8 @@ if st.session_state.submitted_patients:
             
             with col2:
                 st.write("**Next Steps:**")
-                for step in patient['triage_decision']['suggested_next_steps']:
-                    st.write(f"• {step}")
+                st.write(patient['triage_decision']['suggested_next_steps'])
+
 
 # ============================================================================
 # FOOTER

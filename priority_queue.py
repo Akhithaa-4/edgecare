@@ -150,18 +150,33 @@ class FairTriageQueue:
         
         high_critical = state.by_risk_level.get("HIGH", 0) + state.by_risk_level.get("CRITICAL", 0)
         high_risk_rate = (high_critical / state.total_patients * 100) if state.total_patients > 0 else 0
+
         
         confidences = [e.triage_decision.confidence_score for e in self.queue 
                       if hasattr(e, 'triage_decision')]
         avg_confidence = statistics.mean(confidences) if confidences else 0.75
         
+        total_patients = state.total_patients
+        high_critical = (
+            state.by_risk_level.get("HIGH", 0) +
+            state.by_risk_level.get("CRITICAL", 0)
+        )
+
+        high_risk_rate = (
+            (high_critical / total_patients) * 100
+            if total_patients > 0 else 0
+        )
+
         return TriageAnalytics(
-            total_triages=len(self.audit_log),
+            total_triages=total_patients,  # ✅ patients, not audit log
             distribution_by_risk=state.by_risk_level,
             avg_confidence=avg_confidence,
-            median_wait_time=statistics.median([e.wait_time_minutes for e in self.queue]) if self.queue else 0,
+            median_wait_time=statistics.median(
+                [e.wait_time_minutes for e in self.queue]
+            ) if self.queue else 0,
             high_risk_escalation_rate=high_risk_rate
         )
+
     
     def _log_action(self, action: str, **details) -> None:
         """Internal audit logging"""

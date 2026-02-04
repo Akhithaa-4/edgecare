@@ -54,7 +54,9 @@ def serialize_patient(entry: TriageEntry) -> dict:
             "wait_time_minutes": float(entry.wait_time_minutes or 0),
             "intake_timestamp": entry.intake_timestamp.isoformat(),
             "triage_timestamp": entry.triage_timestamp.isoformat(),
+            "added_at": entry.intake_timestamp.isoformat(),  # ← ADD THIS LINE
         }
+
     except Exception as e:
         logger.error(f"Error serializing patient: {e}")
         return {"error": str(e), "patient_id": str(entry.patient_id)}
